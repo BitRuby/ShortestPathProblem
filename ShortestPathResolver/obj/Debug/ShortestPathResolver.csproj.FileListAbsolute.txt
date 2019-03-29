@@ -1,0 +1,14 @@
+C:\Users\firew\Documents\Workspaces\ShortestPathResolver\ShortestPathResolver\ShortestPathResolver\bin\Debug\ShortestPathResolver.exe.config
+C:\Users\firew\Documents\Workspaces\ShortestPathResolver\ShortestPathResolver\ShortestPathResolver\bin\Debug\ShortestPathResolver.exe
+C:\Users\firew\Documents\Workspaces\ShortestPathResolver\ShortestPathResolver\ShortestPathResolver\bin\Debug\ShortestPathResolver.pdb
+C:\Users\firew\Documents\Workspaces\ShortestPathResolver\ShortestPathResolver\ShortestPathResolver\obj\Debug\ShortestPathResolver.csprojAssemblyReference.cache
+C:\Users\firew\Documents\Workspaces\ShortestPathResolver\ShortestPathResolver\ShortestPathResolver\obj\Debug\ShortestPathResolver.csproj.CoreCompileInputs.cache
+C:\Users\firew\Documents\Workspaces\ShortestPathResolver\ShortestPathResolver\ShortestPathResolver\obj\Debug\ShortestPathResolver.exe
+C:\Users\firew\Documents\Workspaces\ShortestPathResolver\ShortestPathResolver\ShortestPathResolver\obj\Debug\ShortestPathResolver.pdb
+C:\Users\firew\Documents\Project\ShortestPathResolver\bin\Debug\ShortestPathResolver.exe.config
+C:\Users\firew\Documents\Project\ShortestPathResolver\bin\Debug\ShortestPathResolver.exe
+C:\Users\firew\Documents\Project\ShortestPathResolver\bin\Debug\ShortestPathResolver.pdb
+C:\Users\firew\Documents\Project\ShortestPathResolver\obj\Debug\ShortestPathResolver.csprojAssemblyReference.cache
+C:\Users\firew\Documents\Project\ShortestPathResolver\obj\Debug\ShortestPathResolver.csproj.CoreCompileInputs.cache
+C:\Users\firew\Documents\Project\ShortestPathResolver\obj\Debug\ShortestPathResolver.exe
+C:\Users\firew\Documents\Project\ShortestPathResolver\obj\Debug\ShortestPathResolver.pdb

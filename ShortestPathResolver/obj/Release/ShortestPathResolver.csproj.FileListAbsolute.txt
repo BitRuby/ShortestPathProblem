@@ -1,0 +1,6 @@
+C:\Users\firew\Documents\Project\ShortestPathResolver\bin\Release\ShortestPathResolver.exe.config
+C:\Users\firew\Documents\Project\ShortestPathResolver\bin\Release\ShortestPathResolver.exe
+C:\Users\firew\Documents\Project\ShortestPathResolver\bin\Release\ShortestPathResolver.pdb
+C:\Users\firew\Documents\Project\ShortestPathResolver\obj\Release\ShortestPathResolver.csproj.CoreCompileInputs.cache
+C:\Users\firew\Documents\Project\ShortestPathResolver\obj\Release\ShortestPathResolver.exe
+C:\Users\firew\Documents\Project\ShortestPathResolver\obj\Release\ShortestPathResolver.pdb
