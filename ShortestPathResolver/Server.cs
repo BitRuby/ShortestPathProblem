@@ -6,14 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using Newtonsoft.Json;
 
 namespace Server
 {
+
+    public class Matrix
+    {
+        public int[,] Mat;
+    }
+
     class Server
     {
         private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private static readonly List<Socket> clientSockets = new List<Socket>();
-        private const int BUFFER_SIZE = 2048;
+        private const int BUFFER_SIZE = 400000;
         private const int PORT = 100;
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
 
@@ -103,7 +110,11 @@ namespace Server
             else
             {
                 Console.WriteLine("Text is an invalid request");
-                byte[] data = Encoding.ASCII.GetBytes("Invalid request");
+                Matrix m = new Matrix();
+                Server s = new Server();
+                m.Mat = s.GenerateMatrix(100);
+                string json = JsonConvert.SerializeObject(m, Formatting.Indented);
+                byte[] data = Encoding.ASCII.GetBytes(json);
                 current.Send(data);
                 Console.WriteLine("Warning Sent");
             }
@@ -164,8 +175,6 @@ namespace Server
         static void Main(string[] args)
         {
             Server s = new Server();
-            int[,] matrix = s.GenerateMatrix(10);
-            s.SaveMatrixToFile(matrix);
             Console.Title = "Server";
             SetupServer();
             Console.ReadLine(); // When we press enter close everything

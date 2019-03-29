@@ -9,6 +9,15 @@ using System.Threading.Tasks;
 namespace Client
 {
 
+    public class Matrix
+    {
+        private int[,] matrix;
+        public void setMatrix(int[,] m)
+        {
+            this.matrix = m;
+        }
+    }
+
     class Client
     {
         private static readonly Socket ClientSocket = new Socket
@@ -92,7 +101,7 @@ namespace Client
 
         private static void ReceiveResponse()
         {
-            var buffer = new byte[2048];
+            var buffer = new byte[400000];
             int received = ClientSocket.Receive(buffer, SocketFlags.None);
             if (received == 0) return;
             var data = new byte[received];
