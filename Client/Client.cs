@@ -5,17 +5,22 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Client
 {
 
     public class Matrix
     {
-        private int[,] matrix;
-        public void setMatrix(int[,] m)
-        {
-            this.matrix = m;
-        }
+        public int[,] Mat;
+    }
+
+    public class Message
+    {
+        public int type; // 0 - Ask for matrix, 1 - Response, 2 - Exit
+        public String message;
+        public Matrix matrix;
+        public int[] range;
     }
 
     class Client
@@ -32,7 +37,9 @@ namespace Client
             RequestLoop();
             Exit();
         }
-
+        /// <summary>
+        /// Function connecting to server Socket
+        /// </summary>
         private static void ConnectToServer()
         {
             int attempts = 0;
@@ -44,7 +51,8 @@ namespace Client
                     attempts++;
                     Console.WriteLine("Connection attempt " + attempts);
                     // Change IPAddress.Loopback to a remote IP to connect to a remote host.
-                    ClientSocket.Connect(IPAddress.Loopback, PORT);
+                    IPAddress localIPAddress = IPAddress.Parse("127.0.0.1");
+                    ClientSocket.Connect(new IPEndPoint(localIPAddress, PORT));
                 }
                 catch (SocketException)
                 {
@@ -56,13 +64,15 @@ namespace Client
             Console.WriteLine("Connected");
         }
 
+
+        /// <summary>
+        /// This loop allowes to receive and send messages
+        /// </summary>
         private static void RequestLoop()
         {
-            Console.WriteLine(@"<Type ""exit"" to properly disconnect client>");
-
+            SendRequest();
             while (true)
             {
-                SendRequest();
                 ReceiveResponse();
             }
         }
@@ -72,22 +82,25 @@ namespace Client
         /// </summary>
         private static void Exit()
         {
-            SendString("exit"); // Tell the server we are exiting
+            Message msg = new Message();
+            msg.type = 2;
+            string request = JsonConvert.SerializeObject(msg, Formatting.Indented);
+            SendString(request);
             ClientSocket.Shutdown(SocketShutdown.Both);
             ClientSocket.Close();
             Environment.Exit(0);
         }
 
+
+        /// <summary>
+        /// Client user input
+        /// </summary>
         private static void SendRequest()
         {
-            Console.Write("Send a request: ");
-            string request = Console.ReadLine();
+            Message msg = new Message();
+            msg.type = 0;
+            string request = JsonConvert.SerializeObject(msg, Formatting.Indented);
             SendString(request);
-
-            if (request.ToLower() == "exit")
-            {
-                Exit();
-            }
         }
 
         /// <summary>
@@ -99,6 +112,9 @@ namespace Client
             ClientSocket.Send(buffer, 0, buffer.Length, SocketFlags.None);
         }
 
+        /// <summary>
+        /// Function saves received data to buffer and deserialize it then passes to process function
+        /// </summary>
         private static void ReceiveResponse()
         {
             var buffer = new byte[400000];
@@ -106,8 +122,53 @@ namespace Client
             if (received == 0) return;
             var data = new byte[received];
             Array.Copy(buffer, data, received);
-            string text = Encoding.ASCII.GetString(data);
-            Console.WriteLine(text);
+            string text = Encoding.ASCII.GetString(data);  
+            Message msg = new Message();
+            msg = JsonConvert.DeserializeObject<Message>(text);
+            DoSth(msg);
+        }
+        /// <summary>
+        /// Function process received information 
+        /// </summary>
+        private static void DoSth(Message msg)
+        {
+            switch(msg.type)
+            {
+                case 0:
+                    Console.WriteLine(msg.message);
+                    break;
+                case 1:
+                    msg.matrix.Mat = Calculate(msg.matrix.Mat, msg.range[0], msg.range[1]);
+                    string request = JsonConvert.SerializeObject(msg, Formatting.Indented);
+                    SendString(request);
+                    Console.WriteLine("Calculated array has been send.");
+                    Console.WriteLine("Nothing to do");
+                    Exit();
+                    break;
+            }
+        }
+
+
+        // <summary>
+        // Floyd-Warshall algorithm accepts matrix and calculating shortest path.
+        // </summary>
+        private static int[,] Calculate(int[,] dist, int start, int end)
+        {
+            Console.WriteLine("Calculating...");
+            Console.WriteLine("Range({0},{1})", start, end);
+            int V = end;
+            for (int k = start; k < end; k++)
+            {
+                for (int i = start; i < end; i++)
+                {
+                    for (int j = start; j < end; j++)
+                    {
+                        if (dist[i, j] > dist[i, k] + dist[k, j])
+                            dist[i, j] = dist[i, k] + dist[k, j];
+                    }
+                }
+            }
+            return dist;
         }
     }
 }
