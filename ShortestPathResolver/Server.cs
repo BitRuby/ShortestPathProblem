@@ -246,7 +246,7 @@ namespace Server
                         if (connectivity == 0 || rnd.Next(0, 3) != 0)
                         {
                             connectivity = 1;
-                            tempValue = rnd.Next(0, 50);
+                            tempValue = rnd.Next(1, 50);
                             m[i, j] = tempValue;
                             m[j, i] = tempValue;
                         }
