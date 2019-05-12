@@ -117,7 +117,7 @@ namespace Client
         /// </summary>
         private static void ReceiveResponse()
         {
-            long size = 64000000;
+            long size = 256000000;
             var buffer = new byte[size];
             int received = ClientSocket.Receive(buffer, SocketFlags.None);
             if (received == 0) return;
