@@ -90,7 +90,7 @@ namespace Server
         private static void CloseAllSockets()
         {
             foreach (Socket socket in clientSockets)
-            {
+            { 
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
             }
