@@ -117,7 +117,8 @@ namespace Client
         /// </summary>
         private static void ReceiveResponse()
         {
-            var buffer = new byte[400000];
+            long size = 64000000;
+            var buffer = new byte[size];
             int received = ClientSocket.Receive(buffer, SocketFlags.None);
             if (received == 0) return;
             var data = new byte[received];
@@ -157,11 +158,12 @@ namespace Client
             Console.WriteLine("Calculating...");
             Console.WriteLine("Range({0},{1})", start, end);
             int V = end;
-            for (int k = start; k < end; k++)
+            int L = (int)Math.Floor((double)Math.Pow(dist.Length, 0.5));
+            for (int k = 0; k <= L-1; ++k)
             {
-                for (int i = start; i < end; i++)
+                for (int i = 0; i <= L-1; ++i)
                 {
-                    for (int j = start; j < end; j++)
+                    for (int j = start; j <= end; ++j)
                     {
                         if (dist[i, j] > dist[i, k] + dist[k, j])
                             dist[i, j] = dist[i, k] + dist[k, j];

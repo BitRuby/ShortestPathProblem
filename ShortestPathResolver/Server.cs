@@ -57,7 +57,7 @@ namespace Server
     {
         private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private static readonly List<Socket> clientSockets = new List<Socket>();
-        private const int BUFFER_SIZE = 400000;
+        private const int BUFFER_SIZE = 64000000;
         private const int PORT = 100;
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
 
@@ -144,6 +144,7 @@ namespace Server
             byte[] recBuf = new byte[received];
             Array.Copy(buffer, recBuf, received);
             string text = Encoding.ASCII.GetString(recBuf);
+            Console.WriteLine("{0}", text);
             Message msg = new Message();
             msg = JsonConvert.DeserializeObject<Message>(text);
             switch (msg.type)
@@ -180,7 +181,9 @@ namespace Server
                     break;
                 case 1: // Response with calulcated array
                     Console.WriteLine("Received array from client (IP: {0})", ((IPEndPoint)(current.RemoteEndPoint)).Address.ToString());
-                    for (int i = msg.range[0]; i <= msg.range[1]; i++)
+                    int L = (int)Math.Floor((double)Math.Pow(msg.matrix.Mat.Length, 0.5));
+
+                    for (int i = 0; i <=L-1; i++)
                     {
                         for (int j = msg.range[0]; j <= msg.range[1]; j++)
                         {
@@ -228,6 +231,7 @@ namespace Server
             Random rnd = new Random();
             int tempValue;
             int connectivity = 0;
+            int cst = 99999;
             for (int i = 0; i < nodes; i++)
             {
                 for (int j = 0; j < nodes; j++)
@@ -248,8 +252,8 @@ namespace Server
                         }
                         else
                         {
-                            m[i, j] = 0;
-                            m[j, i] = 0;
+                            m[i, j] = cst;
+                            m[j, i] = cst;
                         }
                     }
                 }
