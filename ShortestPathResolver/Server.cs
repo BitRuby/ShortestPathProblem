@@ -144,7 +144,6 @@ namespace Server
             byte[] recBuf = new byte[received];
             Array.Copy(buffer, recBuf, received);
             string text = Encoding.ASCII.GetString(recBuf);
-            Console.WriteLine("{0}", text);
             Message msg = new Message();
             msg = JsonConvert.DeserializeObject<Message>(text);
             switch (msg.type)

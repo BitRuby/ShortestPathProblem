@@ -139,10 +139,11 @@ namespace Client
                     Console.WriteLine(msg.message);
                     break;
                 case 1:
+                    Console.WriteLine("Range({0},{1})", msg.range[0], msg.range[1]);
                     msg.matrix.Mat = Calculate(msg.matrix.Mat, msg.range[0], msg.range[1]);
                     string request = JsonConvert.SerializeObject(msg, Formatting.Indented);
                     SendString(request);
-                    Console.WriteLine("Calculated array has been send.");
+                    Console.WriteLine("Calculated matrix has been send.");
                     Console.WriteLine("Nothing to do");
                     Exit();
                     break;
@@ -156,7 +157,6 @@ namespace Client
         private static int[,] Calculate(int[,] dist, int start, int end)
         {
             Console.WriteLine("Calculating...");
-            Console.WriteLine("Range({0},{1})", start, end);
             int V = end;
             int L = (int)Math.Floor((double)Math.Pow(dist.Length, 0.5));
             for (int k = 0; k <= L-1; ++k)
