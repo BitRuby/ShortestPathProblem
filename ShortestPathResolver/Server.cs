@@ -133,13 +133,13 @@ namespace Server
             int offset = 0;
             // int len = buffer.Length;
             Console.WriteLine("rozmiar length {0}", length);
-            while (offset <= length)
+            Console.WriteLine("rozmiar danych {0}", buffer.Length);
+            while (offset < length)
             {
                 if(offset + size > length)
                 {
                     offset += socket.Send(buffer, offset, length - offset, SocketFlags.Partial);
                     Console.WriteLine("Dupa z rozmiaru offset {0}", offset);
-                    break; //to do wyjebania 
                 }
                 else
                 {
@@ -193,33 +193,34 @@ namespace Server
                     }
                     else
                     {
-                        me.type = 2;
-                        me.message = "";
+                        me.type = 1;
                         me.matrix = m;
                         string json = JsonConvert.SerializeObject(me, Formatting.Indented);
                         byte[] data = Encoding.ASCII.GetBytes(json);
                         me.length = data.Length;
                         me.matrix = null;
+                        me.type = 2;
                         int j = 0;
-                        foreach (Socket value in clientSockets)
-                        {
-                            json = JsonConvert.SerializeObject(me, Formatting.Indented);
-                            data = Encoding.ASCII.GetBytes(json);
-                            value.Send(data);
-                            Console.WriteLine("Information send to client {0}.", ((IPEndPoint)(value.RemoteEndPoint)).Address.ToString());
-                            j++;
-                        }
-                        me.type = 1;
-                        me.matrix = m;
-                        j = 0;
-                        Console.WriteLine("Serialized object size: {0} BYTE", me.length);
                         foreach (Socket value in clientSockets)
                         {
                             me.from = s.calculateRanges(c.getClients(), c.getVertices(), j)[0];
                             me.to = s.calculateRanges(c.getClients(), c.getVertices(), j)[1];
                             json = JsonConvert.SerializeObject(me, Formatting.Indented);
                             data = Encoding.ASCII.GetBytes(json);
-                            SendChunks(value, me.length, data);
+                            value.Send(data);
+                            Console.WriteLine("Information send to client {0}.", ((IPEndPoint)(value.RemoteEndPoint)).Address.ToString());
+                            j++;
+                        }
+                        Message msa = new Message();
+                        msa.type = 1;
+                        msa.matrix = m;
+                        string jsonz = JsonConvert.SerializeObject(msa, Formatting.Indented);
+                        byte[] dataz = Encoding.ASCII.GetBytes(jsonz);
+                        j = 0;
+                        Console.WriteLine("Serialized object size: {0} BYTE", me.length);
+                        foreach (Socket value in clientSockets.ToList())
+                        {
+                            SendChunks(value, me.length, dataz);
                             j++;
                         }
                         Console.WriteLine("Generated Matrix Send to Clients");

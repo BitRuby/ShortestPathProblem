@@ -33,6 +33,8 @@ namespace Client
         private const int PORT = 100;
         private static Boolean receivedData = false;
         private static int lengthData = 0;
+        private static int fromData = 0;
+        private static int toData = 0;
 
         static void Main()
         {
@@ -120,16 +122,15 @@ namespace Client
         {
             Console.WriteLine("Stared");
             int size = 8;
-            var buffer = new byte[length+1000];
+            var buffer = new byte[length];
             int received = 0;
             Console.WriteLine("rozmiar length {0}", length);
-            while (received <= length)
+            while (received < length)
             {
                 if(received + size > length)
                 {
                     received += ClientSocket.Receive(buffer, received, length-received, SocketFlags.Partial);
                     Console.WriteLine("dupa z rozmiaru received {0}", received);
-                    break; // to do wyjebania 
                 }
                 else
                 {
@@ -145,7 +146,7 @@ namespace Client
             Array.Copy(buffer, data, received);
             string text = Encoding.ASCII.GetString(data);
             Message msg = new Message();
-            msg = JsonConvert.DeserializeObject<Message>(text, new JsonSerializerSettings { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
+            msg = JsonConvert.DeserializeObject<Message>(text);
             Console.WriteLine(msg);
             DoSth(msg);
         }
@@ -174,6 +175,8 @@ namespace Client
                 if (msg.type == 2)
                 {
                     lengthData = msg.length;
+                    fromData = msg.from;
+                    toData = msg.to;
                     receivedData = true;
                 }
                 DoSth(msg);
