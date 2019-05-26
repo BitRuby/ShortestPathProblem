@@ -127,15 +127,16 @@ namespace Server
         /// </summary>
         /// <param name="socket"></param>
         /// <param name="buffer"></param>
-        private static void SendChunks(Socket socket, int length)
+        private static void SendChunks(Socket socket, int length, byte[] buffer)
         {
-            int size = 512240;
+            int size = 8;
             int offset = 0;
-            byte[] buffer = new byte[length];
             while (offset <= length)
             {
-                offset += socket.Send(buffer, size, offset, SocketFlags.Partial);
+                offset += socket.Send(buffer, offset, size, SocketFlags.Partial);
+                Console.WriteLine("Data sed: {0}", offset);
             }
+            Console.WriteLine("Data send to client {0}.", ((IPEndPoint)(socket.RemoteEndPoint)).Address.ToString());
         }
         /// <summary>
         /// Function sends response to client
@@ -176,7 +177,7 @@ namespace Server
                         me.message = "Not enough clients connected to server.";
                         string jsonmess = JsonConvert.SerializeObject(me, Formatting.Indented);
                         byte[] data = Encoding.ASCII.GetBytes(jsonmess);
-                        current.Send(data, SocketFlags.Partial);
+                        current.Send(data);
 
                     }
                     else
@@ -193,7 +194,8 @@ namespace Server
                         {
                             json = JsonConvert.SerializeObject(me, Formatting.Indented);
                             data = Encoding.ASCII.GetBytes(json);
-                            value.Send(data, SocketFlags.Partial);
+                            value.Send(data);
+                            Console.WriteLine("Information send to client {0}.", ((IPEndPoint)(value.RemoteEndPoint)).Address.ToString());
                             j++;
                         }
                         me.type = 1;
@@ -206,7 +208,7 @@ namespace Server
                             me.to = s.calculateRanges(c.getClients(), c.getVertices(), j)[1];
                             json = JsonConvert.SerializeObject(me, Formatting.Indented);
                             data = Encoding.ASCII.GetBytes(json);
-                            SendChunks(value, me.length);
+                            SendChunks(value, me.length, data);
                             j++;
                         }
                         Console.WriteLine("Generated Matrix Send to Clients");

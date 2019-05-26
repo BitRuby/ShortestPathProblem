@@ -31,6 +31,8 @@ namespace Client
                    (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         private const int PORT = 100;
+        private static Boolean receivedData = false;
+        private static int lengthData = 0;
 
         static void Main()
         {
@@ -114,34 +116,56 @@ namespace Client
             ClientSocket.Send(buffer, 0, buffer.Length, SocketFlags.None);
         }
 
-        //private static void ReceiveAsChunks(int length)
-        //{
-        //    var buffer = new byte[length];
-        //    int received = ClientSocket.Receive(buffer, SocketFlags.Partial);
-        //    if (received == 0) return;
-        //    var data = new byte[received];
-        //    Array.Copy(buffer, data, received);
-        //    string text = Encoding.ASCII.GetString(data);
-        //    Message msg = new Message();
-        //    msg = JsonConvert.DeserializeObject<Message>(text, new JsonSerializerSettings { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
-        //    DoSth(msg);
-        //}
+        private static void ReceiveAsChunks(int length)
+        {
+            Console.WriteLine("Stared");
+            int size = 8;
+            var buffer = new byte[length+1000];
+            int received = 0;
+            while (received <= length)
+            {
+                received += ClientSocket.Receive(buffer, received, size, SocketFlags.Partial);
+                Console.WriteLine("Data received: {0}", received);
+
+            }
+            Console.WriteLine("cwel");
+            if (received == 0) return;
+            var data = new byte[received];
+            Array.Copy(buffer, data, received);
+            string text = Encoding.ASCII.GetString(data);
+            Message msg = new Message();
+            msg = JsonConvert.DeserializeObject<Message>(text, new JsonSerializerSettings { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
+            DoSth(msg);
+        }
 
         /// <summary>
         /// Function saves received data to buffer and deserialize it then passes to process function
         /// </summary>
         private static void ReceiveResponse()
         {
-            long size = 102400000;
-            var buffer = new byte[size];
-            int received = ClientSocket.Receive(buffer, SocketFlags.Partial);
-            if (received == 0) return;
-            var data = new byte[received];
-            Array.Copy(buffer, data, received);
-            string text = Encoding.ASCII.GetString(data);  
-            Message msg = new Message();
-            msg = JsonConvert.DeserializeObject<Message>(text, new JsonSerializerSettings { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
-            DoSth(msg);
+            if (receivedData == true)
+            {
+                ReceiveAsChunks(lengthData);
+            }
+            else
+            {
+                long size = 102400000;
+                var buffer = new byte[size];
+                int received = ClientSocket.Receive(buffer, SocketFlags.None);
+                if (received == 0) return;
+                var data = new byte[received];
+                Array.Copy(buffer, data, received);
+                string text = Encoding.ASCII.GetString(data);
+                Console.WriteLine("Data received: {0}", text);
+                Message msg = new Message();
+                msg = JsonConvert.DeserializeObject<Message>(text, new JsonSerializerSettings { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
+                if (msg.type == 2)
+                {
+                    lengthData = msg.length;
+                    receivedData = true;
+                }
+                DoSth(msg);
+            }
         }
         /// <summary>
         /// Function process received information 
