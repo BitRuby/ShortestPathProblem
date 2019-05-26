@@ -25,8 +25,10 @@ namespace Server
     {
         public int type; // 0 - Error not enough clients connected, 1 - Send matrix 
         public String message;
+        public int length;
         public Matrix matrix;
-        public int[] range;
+        public int from;
+        public int to;
     }
 
     public class Config
@@ -57,7 +59,7 @@ namespace Server
     {
         private static readonly Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private static readonly List<Socket> clientSockets = new List<Socket>();
-        private const int BUFFER_SIZE = 256000000;
+        private const int BUFFER_SIZE = 102400000;
         private const int PORT = 100;
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
 
@@ -121,6 +123,21 @@ namespace Server
             serverSocket.BeginAccept(AcceptCallback, null);
         }
         /// <summary>
+        ///  Send data as chunks
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="buffer"></param>
+        private static void SendChunks(Socket socket, int length)
+        {
+            int size = 512240;
+            int offset = 0;
+            byte[] buffer = new byte[length];
+            while (offset <= length)
+            {
+                offset += socket.Send(buffer, size, offset, SocketFlags.Partial);
+            }
+        }
+        /// <summary>
         /// Function sends response to client
         /// </summary>
         private static void ReceiveCallback(IAsyncResult AR)
@@ -145,7 +162,7 @@ namespace Server
             Array.Copy(buffer, recBuf, received);
             string text = Encoding.ASCII.GetString(recBuf);
             Message msg = new Message();
-            msg = JsonConvert.DeserializeObject<Message>(text);
+            msg = JsonConvert.DeserializeObject<Message>(text, new JsonSerializerSettings { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
             switch (msg.type)
             {
                 case 0: // First request from client
@@ -159,20 +176,37 @@ namespace Server
                         me.message = "Not enough clients connected to server.";
                         string jsonmess = JsonConvert.SerializeObject(me, Formatting.Indented);
                         byte[] data = Encoding.ASCII.GetBytes(jsonmess);
-                        current.Send(data);
+                        current.Send(data, SocketFlags.Partial);
+
                     }
                     else
                     {
-                        me.type = 1;
+                        me.type = 2;
                         me.message = "";
                         me.matrix = m;
+                        string json = JsonConvert.SerializeObject(me, Formatting.Indented);
+                        byte[] data = Encoding.ASCII.GetBytes(json);
+                        me.length = data.Length;
+                        me.matrix = null;
                         int j = 0;
                         foreach (Socket value in clientSockets)
                         {
-                            me.range = s.calculateRanges(c.getClients(), c.getVertices(), j);
-                            string json = JsonConvert.SerializeObject(me, Formatting.Indented);
-                            byte[] data = Encoding.ASCII.GetBytes(json);
-                            value.Send(data);
+                            json = JsonConvert.SerializeObject(me, Formatting.Indented);
+                            data = Encoding.ASCII.GetBytes(json);
+                            value.Send(data, SocketFlags.Partial);
+                            j++;
+                        }
+                        me.type = 1;
+                        me.matrix = m;
+                        j = 0;
+                        Console.WriteLine("Serialized object size: {0} BYTE", me.length);
+                        foreach (Socket value in clientSockets)
+                        {
+                            me.from = s.calculateRanges(c.getClients(), c.getVertices(), j)[0];
+                            me.to = s.calculateRanges(c.getClients(), c.getVertices(), j)[1];
+                            json = JsonConvert.SerializeObject(me, Formatting.Indented);
+                            data = Encoding.ASCII.GetBytes(json);
+                            SendChunks(value, me.length);
                             j++;
                         }
                         Console.WriteLine("Generated Matrix Send to Clients");
@@ -184,7 +218,7 @@ namespace Server
 
                     for (int i = 0; i <=L-1; i++)
                     {
-                        for (int j = msg.range[0]; j <= msg.range[1]; j++)
+                        for (int j = msg.from; j <= msg.to; j++)
                         {
                             mNew.Mat[i,j] = msg.matrix.Mat[i,j];
                         }

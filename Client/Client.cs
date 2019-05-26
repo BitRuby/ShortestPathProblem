@@ -20,7 +20,9 @@ namespace Client
         public int type; // 0 - Ask for matrix, 1 - Response, 2 - Exit
         public String message;
         public Matrix matrix;
-        public int[] range;
+        public int length;
+        public int from;
+        public int to;
     }
 
     class Client
@@ -112,20 +114,33 @@ namespace Client
             ClientSocket.Send(buffer, 0, buffer.Length, SocketFlags.None);
         }
 
+        //private static void ReceiveAsChunks(int length)
+        //{
+        //    var buffer = new byte[length];
+        //    int received = ClientSocket.Receive(buffer, SocketFlags.Partial);
+        //    if (received == 0) return;
+        //    var data = new byte[received];
+        //    Array.Copy(buffer, data, received);
+        //    string text = Encoding.ASCII.GetString(data);
+        //    Message msg = new Message();
+        //    msg = JsonConvert.DeserializeObject<Message>(text, new JsonSerializerSettings { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
+        //    DoSth(msg);
+        //}
+
         /// <summary>
         /// Function saves received data to buffer and deserialize it then passes to process function
         /// </summary>
         private static void ReceiveResponse()
         {
-            long size = 256000000;
+            long size = 102400000;
             var buffer = new byte[size];
-            int received = ClientSocket.Receive(buffer, SocketFlags.None);
+            int received = ClientSocket.Receive(buffer, SocketFlags.Partial);
             if (received == 0) return;
             var data = new byte[received];
             Array.Copy(buffer, data, received);
             string text = Encoding.ASCII.GetString(data);  
             Message msg = new Message();
-            msg = JsonConvert.DeserializeObject<Message>(text);
+            msg = JsonConvert.DeserializeObject<Message>(text, new JsonSerializerSettings { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
             DoSth(msg);
         }
         /// <summary>
@@ -139,8 +154,8 @@ namespace Client
                     Console.WriteLine(msg.message);
                     break;
                 case 1:
-                    Console.WriteLine("Range({0},{1})", msg.range[0], msg.range[1]);
-                    msg.matrix.Mat = Calculate(msg.matrix.Mat, msg.range[0], msg.range[1]);
+                    Console.WriteLine("Range({0},{1})", msg.from, msg.to);
+                    msg.matrix.Mat = Calculate(msg.matrix.Mat, msg.from, msg.to);
                     string request = JsonConvert.SerializeObject(msg, Formatting.Indented);
                     SendString(request);
                     Console.WriteLine("Calculated matrix has been send.");
