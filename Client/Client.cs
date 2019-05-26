@@ -122,10 +122,21 @@ namespace Client
             int size = 8;
             var buffer = new byte[length+1000];
             int received = 0;
+            Console.WriteLine("rozmiar length {0}", length);
             while (received <= length)
             {
-                received += ClientSocket.Receive(buffer, received, size, SocketFlags.Partial);
-                Console.WriteLine("Data received: {0}", received);
+                if(received + size > length)
+                {
+                    received += ClientSocket.Receive(buffer, received, length-received, SocketFlags.Partial);
+                    Console.WriteLine("dupa z rozmiaru received {0}", received);
+                    break; // to do wyjebania 
+                }
+                else
+                {
+                    received += ClientSocket.Receive(buffer, received, size, SocketFlags.Partial);
+                }
+               
+               // Console.WriteLine("Data received: {0}", received);
 
             }
             Console.WriteLine("cwel");
@@ -135,6 +146,7 @@ namespace Client
             string text = Encoding.ASCII.GetString(data);
             Message msg = new Message();
             msg = JsonConvert.DeserializeObject<Message>(text, new JsonSerializerSettings { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
+            Console.WriteLine(msg);
             DoSth(msg);
         }
 

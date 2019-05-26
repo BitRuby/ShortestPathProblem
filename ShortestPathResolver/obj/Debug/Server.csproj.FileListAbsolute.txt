@@ -9,3 +9,14 @@ C:\Users\firew\Documents\Project\ShortestPathResolver\bin\Debug\Newtonsoft.Json.
 C:\Users\firew\Documents\Project\ShortestPathResolver\bin\Debug\Newtonsoft.Json.pdb
 C:\Users\firew\Documents\Project\ShortestPathResolver\bin\Debug\Newtonsoft.Json.xml
 C:\Users\firew\Documents\Project\ShortestPathResolver\obj\Debug\Server.csproj.CopyComplete
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\bin\Debug\ShortestPathResolver.exe.config
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\bin\Debug\ShortestPathResolver.exe
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\bin\Debug\ShortestPathResolver.pdb
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\bin\Debug\Newtonsoft.Json.dll
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\bin\Debug\Newtonsoft.Json.pdb
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\bin\Debug\Newtonsoft.Json.xml
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\obj\Debug\Server.csprojAssemblyReference.cache
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\obj\Debug\Server.csproj.CoreCompileInputs.cache
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\obj\Debug\Server.csproj.CopyComplete
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\obj\Debug\ShortestPathResolver.exe
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\ShortestPathResolver\obj\Debug\ShortestPathResolver.pdb

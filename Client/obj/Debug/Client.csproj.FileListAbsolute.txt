@@ -9,3 +9,14 @@ C:\Users\firew\Documents\Project\Client\bin\Debug\Newtonsoft.Json.dll
 C:\Users\firew\Documents\Project\Client\bin\Debug\Newtonsoft.Json.pdb
 C:\Users\firew\Documents\Project\Client\bin\Debug\Newtonsoft.Json.xml
 C:\Users\firew\Documents\Project\Client\obj\Debug\Client.csproj.CopyComplete
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\bin\Debug\Client.exe.config
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\bin\Debug\Client.exe
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\bin\Debug\Client.pdb
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\bin\Debug\Newtonsoft.Json.dll
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\bin\Debug\Newtonsoft.Json.pdb
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\bin\Debug\Newtonsoft.Json.xml
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\obj\Debug\Client.csprojAssemblyReference.cache
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\obj\Debug\Client.csproj.CoreCompileInputs.cache
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\obj\Debug\Client.csproj.CopyComplete
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\obj\Debug\Client.exe
+C:\Users\wojte\Source\Repos\BitRuby\ShortestPathProblem\Client\obj\Debug\Client.pdb

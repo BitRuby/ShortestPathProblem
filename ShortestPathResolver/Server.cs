@@ -131,10 +131,21 @@ namespace Server
         {
             int size = 8;
             int offset = 0;
+            // int len = buffer.Length;
+            Console.WriteLine("rozmiar length {0}", length);
             while (offset <= length)
             {
-                offset += socket.Send(buffer, offset, size, SocketFlags.Partial);
-                Console.WriteLine("Data sed: {0}", offset);
+                if(offset + size > length)
+                {
+                    offset += socket.Send(buffer, offset, length - offset, SocketFlags.Partial);
+                    Console.WriteLine("Dupa z rozmiaru offset {0}", offset);
+                    break; //to do wyjebania 
+                }
+                else
+                {
+                    offset += socket.Send(buffer, offset, size, SocketFlags.Partial);
+                }  
+                //Console.WriteLine("Data sed: {0}", offset);
             }
             Console.WriteLine("Data send to client {0}.", ((IPEndPoint)(socket.RemoteEndPoint)).Address.ToString());
         }
