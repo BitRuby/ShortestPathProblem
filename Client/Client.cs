@@ -196,6 +196,7 @@ namespace Client
                 case 1:
                     Console.WriteLine("Range({0},{1})", fromData, toData);
                     msg.matrix.Mat = Calculate(msg.matrix.Mat, fromData, toData);
+                    msg.message = "Calculated matrix response from client IP: " + ((IPEndPoint)(ClientSocket.RemoteEndPoint)).Address.ToString();
                     string request = JsonConvert.SerializeObject(msg, Formatting.Indented);
                     byte[] data = Encoding.ASCII.GetBytes(request);
                     ClientSocket.Send(data);
