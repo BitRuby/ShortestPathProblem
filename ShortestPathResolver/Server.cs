@@ -174,7 +174,8 @@ namespace Server
             Array.Copy(buffer, recBuf, received);
             string text = Encoding.ASCII.GetString(recBuf);
             Message msg = new Message();
-            msg = JsonConvert.DeserializeObject<Message>(text, new JsonSerializerSettings { MetadataPropertyHandling = MetadataPropertyHandling.Ignore });
+            msg.matrix = new Matrix();
+            msg = JsonConvert.DeserializeObject<Message>(text);
             switch (msg.type)
             {
                 case 0: // First request from client
@@ -197,7 +198,9 @@ namespace Server
                         me.matrix = m;
                         string json = JsonConvert.SerializeObject(me, Formatting.Indented);
                         byte[] data = Encoding.ASCII.GetBytes(json);
+                        me.message = "Server sending length of matrix to clients";
                         me.length = data.Length;
+
                         me.matrix = null;
                         me.type = 2;
                         int j = 0;

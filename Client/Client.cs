@@ -180,7 +180,10 @@ namespace Client
                     toData = msg.to;
                     receivedData = true;
                 }
-                DoSth(msg);
+                else {
+                    DoSth(msg);
+                }
+
             }
         }
         /// <summary>
@@ -195,14 +198,17 @@ namespace Client
                     break;
                 case 1:
                     Console.WriteLine("Range({0},{1})", fromData, toData);
-                    msg.matrix.Mat = Calculate(msg.matrix.Mat, fromData, toData);
-                    msg.message = "Calculated matrix response from client IP: " + ((IPEndPoint)(ClientSocket.RemoteEndPoint)).Address.ToString();
-                    string request = JsonConvert.SerializeObject(msg, Formatting.Indented);
+                    Message newm = new Message();
+                    newm.matrix = new Matrix();
+                    newm.matrix.Mat = Calculate(msg.matrix.Mat, fromData, toData);
+                    newm.type = 1;
+                    newm.message = "Calculated matrix response from client IP: " + ((IPEndPoint)(ClientSocket.RemoteEndPoint)).Address.ToString();
+                    string request = JsonConvert.SerializeObject(newm, Formatting.Indented);
                     byte[] data = Encoding.ASCII.GetBytes(request);
                     ClientSocket.Send(data);
                     Console.WriteLine("Calculated matrix has been send.");
                     Console.WriteLine("Nothing to do");
-                    Exit();
+                    //Exit();
                     break;
             }
         }
