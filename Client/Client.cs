@@ -168,6 +168,7 @@ namespace Client
                 if (received == 0) return;
                 var data = new byte[received];
                 Array.Copy(buffer, data, received);
+                
                 string text = Encoding.ASCII.GetString(data);
                 Console.WriteLine("Data received: {0}", text);
                 Message msg = new Message();
@@ -193,8 +194,8 @@ namespace Client
                     Console.WriteLine(msg.message);
                     break;
                 case 1:
-                    Console.WriteLine("Range({0},{1})", msg.from, msg.to);
-                    msg.matrix.Mat = Calculate(msg.matrix.Mat, msg.from, msg.to);
+                    Console.WriteLine("Range({0},{1})", fromData, toData);
+                    msg.matrix.Mat = Calculate(msg.matrix.Mat, fromData, toData);
                     string request = JsonConvert.SerializeObject(msg, Formatting.Indented);
                     SendString(request);
                     Console.WriteLine("Calculated matrix has been send.");
