@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace ShortestPathResolver
 {
     [Serializable]
-    class Message
+    public class Message
     {
         public int[,] Mat { get; set; }
         public int Type { get; set; }
