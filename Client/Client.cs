@@ -54,7 +54,7 @@ namespace ShortestPathResolver
             ClientSocket.Send(buffer, 0, buffer.Length, SocketFlags.None);
         }
 
-        private static void Send(Message m, Socket socket, int length)
+        private static void Send(Message m, int length)
         {
             int offset = 0;
             byte[] buffer = Message.Serialize(m);
@@ -62,11 +62,11 @@ namespace ShortestPathResolver
             {
                 if (offset + PACKET_SIZE > length)
                 {
-                    offset += socket.Send(buffer, offset, length - offset, SocketFlags.Partial);
+                    offset += ClientSocket.Send(buffer, offset, length - offset, SocketFlags.Partial);
                 }
                 else
                 {
-                    offset += socket.Send(buffer, offset, PACKET_SIZE, SocketFlags.Partial);
+                    offset += ClientSocket.Send(buffer, offset, PACKET_SIZE, SocketFlags.Partial);
                 }
             }
         }
