@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace ShortestPathResolver
 {
@@ -13,14 +14,16 @@ namespace ShortestPathResolver
         public String Text { get; set; }
         public int RangeFrom { get; set; }
         public int RangeTo { get; set; }
+        public int Length { get; set; }
 
-        public Message(int[,] Mat = null, int Type = 0, String Text = null, int RangeFrom = 0, int RangeTo = 0)
+        public Message(int[,] Mat = null, int Type = 0, String Text = null, int RangeFrom = 0, int RangeTo = 0, int Length = 0)
         {
             this.Mat = Mat;
             this.Type = Type;
             this.Text = Text;
             this.RangeFrom = RangeFrom;
             this.RangeTo = RangeTo;
+            this.Length = Length;
         }
 
         public static byte[] Serialize(object o)
@@ -38,5 +41,6 @@ namespace ShortestPathResolver
             object o = formatter.Deserialize(stream);
             return o;
         }
+
     }
 }

@@ -19,3 +19,4 @@ C:\Users\firew\Documents\Project\Client\obj\Debug\Client.csproj.CoreCompileInput
 C:\Users\firew\Documents\Project\Client\obj\Debug\Client.csproj.CopyComplete
 C:\Users\firew\Documents\Project\Client\obj\Debug\Client.exe
 C:\Users\firew\Documents\Project\Client\obj\Debug\Client.pdb
+C:\Users\firew\Documents\Project\Client\obj\Debug\Client.csprojAssemblyReference.cache

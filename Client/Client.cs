@@ -12,7 +12,9 @@ namespace ShortestPathResolver
         private static readonly Socket ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private const int PORT = 100;
         private const int SIZE = 512000000;
+        private const int PACKET_SIZE = 512;
         private static byte[] buffer = new byte[SIZE];
+        private static TempStorage tempStorage = new TempStorage(ClientSocket);
         #endregion
 
         private static void ConnectToServer()
@@ -54,7 +56,6 @@ namespace ShortestPathResolver
 
         private static Message Receive()
         {
-            Message m = new Message();
             int received = ClientSocket.Receive(buffer, SocketFlags.None);
             if (received == 0) return null;
             var data = new byte[received];
@@ -62,9 +63,30 @@ namespace ShortestPathResolver
             return (Message) Message.Deserialize(new MemoryStream(data));
         }
 
+        private static Message Receive(int length)
+        {
+            int received = 0;
+            //Console.WriteLine("R: {0}; L: {1}", received, length);
+            while (received < length)
+            {
+                if (received + PACKET_SIZE > length)
+                {
+                    received += ClientSocket.Receive(buffer, received, length - received, SocketFlags.Partial);
+                }
+                else
+                {
+                    received += ClientSocket.Receive(buffer, received, PACKET_SIZE, SocketFlags.Partial);
+                }
+            }
+            if (received == 0) return null;
+            var data = new byte[received];
+            Array.Copy(buffer, data, received);
+            return (Message)Message.Deserialize(new MemoryStream(data));
+        }
+
         private static void RequestLoop()
         {
-            Message m = new Message(null, 1);
+            Message m = new Message(null, 1, "Helo message. ");
             Send(m);
             while (true)
             {
@@ -74,9 +96,17 @@ namespace ShortestPathResolver
 
         private static void ReceiveResponse()
         {
-            Message receive = Receive();
+            Message receive;
+            if (tempStorage.ReceiveFlag)
+            {
+                receive = Receive(tempStorage.Length);
+            }
+            else
+            {
+                receive = Receive();
+            }
             if (receive == null) return;
-            else DoSth(receive);
+            DoSth(receive);
         }
 
         private static void DoSth(Message receive)
@@ -87,9 +117,15 @@ namespace ShortestPathResolver
                     Console.WriteLine(receive.Text);
                     break;
                 case 2:
-                    Console.WriteLine("Matrix has been received");
+                    Console.WriteLine(receive.Text.ToString());
+                    tempStorage.Length = receive.Length;
+                    tempStorage.ReceiveFlag = true;
+                    Message m = new Message(null, 2, "Matrix request. ");
+                    Send(m);
                     break;
                 case 3:
+                    Console.WriteLine(receive.Text.ToString());
+                    tempStorage.ReceiveFlag = false;
                     break;
             }
         }
