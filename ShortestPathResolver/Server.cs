@@ -122,6 +122,17 @@ namespace ShortestPathResolver
             }
             else
             {
+                try
+                {
+                    received = current.EndReceive(AR);
+                }
+                catch (SocketException)
+                {
+                    Console.WriteLine("Client forcefully disconnected");
+                    current.Close();
+                    clientSockets.Remove(current);
+                    return;
+                }
                 Message m = (Message)Message.Deserialize(new MemoryStream(buffer));
                 switch (m.Type)
                 {
