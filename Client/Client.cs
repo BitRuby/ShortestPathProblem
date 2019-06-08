@@ -13,6 +13,7 @@ namespace ShortestPathResolver
         private const int PORT = 100;
         private const int SIZE = 512000000;
         private const int PACKET_SIZE = 512;
+        private static int[,] solution;
         private static byte[] buffer = new byte[SIZE];
         private static TempStorage tempStorage = new TempStorage(ClientSocket);
         #endregion
@@ -83,7 +84,6 @@ namespace ShortestPathResolver
         private static Message Receive(int length)
         {
             int received = 0;
-            //Console.WriteLine("R: {0}; L: {1}", received, length);
             while (received < length)
             {
                 if (received + PACKET_SIZE > length)
@@ -136,13 +136,27 @@ namespace ShortestPathResolver
                 case 2:
                     Console.WriteLine(receive.Text.ToString());
                     tempStorage.Length = receive.Length;
+                    tempStorage.rangeFrom = receive.RangeFrom;
+                    tempStorage.rangeTo = receive.RangeTo;
                     tempStorage.ReceiveFlag = true;
-                    Message m = new Message(null, 2, "Matrix request. ");
-                    Send(m);
+                    Message m1 = new Message(null, 2, "Matrix request. ");
+                    Send(m1);
+                    Console.WriteLine("Matrix request has been send. ");
                     break;
                 case 3:
                     Console.WriteLine(receive.Text.ToString());
+                    solution = Matrix.Calculate(receive.Mat, tempStorage.rangeFrom, tempStorage.rangeTo);
+                    tempStorage.Length = Message.Serialize(new Message(solution, 3, "Response with matrix", tempStorage.rangeFrom, tempStorage.rangeTo)).Length;
+                    Message m2 = new Message(null, 3, "Length message. ", 0, 0, tempStorage.Length);
+                    Send(m2);
                     tempStorage.ReceiveFlag = false;
+                    Console.WriteLine("Message length has been send to server. ");
+                    break;
+                case 4:
+                    Console.WriteLine(receive.Text.ToString());
+                    Message m3 = new Message(solution, 4, "Response with matrix", tempStorage.rangeFrom, tempStorage.rangeTo);
+                    Send(m3, tempStorage.Length);
+                    Console.WriteLine("Calculated matrix has been send. ");
                     break;
             }
         }

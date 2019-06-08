@@ -66,5 +66,18 @@ namespace ShortestPathResolver
             }
         }
 
+        public int[,] Initialize(int length)
+        {
+            int[,] dist = new int[length, length];
+            for (int i = 0; i < length; ++i)
+            {
+                for (int j = 0; j < length; ++j)
+                {
+                    dist[i, j] = 0;
+                }
+            }
+            return dist;
+        }
+
     }
 }

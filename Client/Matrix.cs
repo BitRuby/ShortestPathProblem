@@ -4,7 +4,7 @@ namespace ShortestPathResolver
 {
     class Matrix
     {
-        private static int[,] Calculate(int[,] dist, int start, int end)
+        public static int[,] Calculate(int[,] dist, int start, int end)
         {
             Console.WriteLine("Calculating...");
             int V = end;
@@ -22,5 +22,6 @@ namespace ShortestPathResolver
             }
             return dist;
         }
+       
     }
 }

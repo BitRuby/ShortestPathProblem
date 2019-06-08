@@ -10,6 +10,8 @@ namespace ShortestPathResolver
         public Boolean ReceiveFlag { get; set; } = false;
         public Message ReceivedMessage { get; set; } = null;
         public Socket Socket { get; set; } = null;
+        public int rangeFrom { get; set; } = 0;
+        public int rangeTo { get; set; } = 0;
         public TempStorage(Socket socket)
         {
             this.Socket = socket;
