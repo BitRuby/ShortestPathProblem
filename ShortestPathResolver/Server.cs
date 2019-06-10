@@ -90,7 +90,7 @@ namespace ShortestPathResolver
                 {
                     temp2.ReceivedMessage = (Message)Message.Deserialize(new MemoryStream(buffer));
                     Console.WriteLine("Received matrix from client (IP: {0})", ((IPEndPoint)(current.RemoteEndPoint)).Address.ToString());
-                    int L = (int)Math.Floor((double)Math.Pow(config.GetVertices() * 2, 0.5));
+                    int L = (int)Math.Floor((double)Math.Pow(temp2.ReceivedMessage.Mat.Length, 0.5));
                     for (int i = 0; i <= L - 1; i++)
                     {
                         for (int j = temp2.ReceivedMessage.RangeFrom; j <= temp2.ReceivedMessage.RangeTo; j++)
