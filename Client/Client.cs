@@ -12,7 +12,7 @@ namespace ShortestPathResolver
         private static readonly Socket ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private const int PORT = 100;
         private const int SIZE = 512000000;
-        private const int PACKET_SIZE = 512;
+        private static int PACKET_SIZE;
         private static int[,] solution;
         private static byte[] buffer = new byte[SIZE];
         private static TempStorage tempStorage = new TempStorage(ClientSocket);
@@ -139,15 +139,19 @@ namespace ShortestPathResolver
                     tempStorage.rangeFrom = receive.RangeFrom;
                     tempStorage.rangeTo = receive.RangeTo;
                     tempStorage.ReceiveFlag = true;
+                    PACKET_SIZE = receive.PacketSize;
                     Message m1 = new Message(null, 2, "Matrix request. ");
                     Send(m1);
                     Console.WriteLine("Matrix request has been send. ");
                     break;
                 case 3:
                     Console.WriteLine(receive.Text.ToString());
+                    tempStorage.Sw.Start();
                     solution = Matrix.Calculate(receive.Mat, tempStorage.rangeFrom, tempStorage.rangeTo);
+                    tempStorage.Sw.Stop();
                     tempStorage.Length = Message.Serialize(new Message(solution, 3, "Response with matrix", tempStorage.rangeFrom, tempStorage.rangeTo)).Length;
                     Message m2 = new Message(null, 3, "Length message. ", 0, 0, tempStorage.Length);
+                    m2.TimeLog.Add(tempStorage.Sw.Elapsed);
                     Send(m2);
                     tempStorage.ReceiveFlag = false;
                     Console.WriteLine("Message length has been send to server. ");

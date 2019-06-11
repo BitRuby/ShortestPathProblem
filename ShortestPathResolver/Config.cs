@@ -23,5 +23,9 @@ namespace ShortestPathResolver
         { 
             return this.Items.Clients;
         }
+        public int GetPackageSize()
+        {
+            return this.Items.PackageSize;
+        }
     }
 }

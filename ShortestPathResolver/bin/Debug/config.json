@@ -1,4 +1,5 @@
 {
     "Clients": "2",
-    "Vertices":  "10"
+    "Vertices": "1000",
+    "PackageSize":  "512"
 }

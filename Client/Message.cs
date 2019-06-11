@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -14,6 +15,8 @@ namespace ShortestPathResolver
         public int RangeFrom { get; set; }
         public int RangeTo { get; set; }
         public int Length { get; set; }
+        public int PacketSize { get; set; }
+        public List<TimeSpan> TimeLog { get; set; } = new List<TimeSpan>();
 
         public Message(int[,] Mat = null, int Type = 0, String Text = null, int RangeFrom = 0, int RangeTo = 0, int Length = 0)
         {

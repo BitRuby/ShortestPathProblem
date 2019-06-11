@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Sockets;
 
 namespace ShortestPathResolver
@@ -10,6 +12,8 @@ namespace ShortestPathResolver
         public Boolean ReceiveFlag { get; set; } = false;
         public Message ReceivedMessage { get; set; } = null;
         public Socket Socket { get; set; } = null;
+        public Stopwatch Sw { get; set; } = new Stopwatch();
+        public List<TimeSpan> TimeLog { get; set; } = new List<TimeSpan>();
         public TempStorage(Socket socket)
         {
             this.Socket = socket;

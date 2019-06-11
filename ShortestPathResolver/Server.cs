@@ -13,7 +13,7 @@ namespace ShortestPathResolver
         private static readonly List<Socket> clientSockets = new List<Socket>();
         private const int PORT = 100;
         private const int SIZE = 512000000;
-        private const int PACKET_SIZE = 512;
+        private static int PACKET_SIZE;
         private static Config config = new Config();
         private static Matrix matrix = new Matrix();
         private static List<TempStorage> tempStorage = new List<TempStorage>();
@@ -32,7 +32,9 @@ namespace ShortestPathResolver
             serverSocket.BeginAccept(AcceptCallback, null);
             generatedMatrix = matrix.GenerateMatrix(config.GetVertices());
             solution = matrix.Initialize(config.GetVertices());
+            PACKET_SIZE = config.GetPackageSize();
             Console.WriteLine("Generated graph vertices: {0}", config.GetVertices());
+            Console.WriteLine("Chunk size: {0} bytes", config.GetPackageSize());
             Console.WriteLine("Waiting for {0} clients to send matrix", config.GetClients());
             Console.WriteLine("Server setup complete");
         }
@@ -88,8 +90,12 @@ namespace ShortestPathResolver
                 }
                 if (temp2.Offset == temp2.Length)
                 {
+                    temp2.Sw.Stop();
                     temp2.ReceivedMessage = (Message)Message.Deserialize(new MemoryStream(buffer));
-                    Console.WriteLine("Received matrix from client (IP: {0})", ((IPEndPoint)(current.RemoteEndPoint)).Address.ToString());
+                    Console.WriteLine("Received matrix from client (IP: {0}). ", ((IPEndPoint)(current.RemoteEndPoint)).Address.ToString());
+                    Console.WriteLine("Calculation time: {0} s", temp2.TimeLog[0]);
+                    Console.WriteLine("Send/receive time: {0} s", temp2.Sw.Elapsed - temp2.TimeLog[0]);
+                    Console.WriteLine("Elapsed total: {0} s", temp2.Sw.Elapsed);
                     int L = (int)Math.Floor((double)Math.Pow(temp2.ReceivedMessage.Mat.Length, 0.5));
                     for (int i = 0; i <= L - 1; i++)
                     {
@@ -134,6 +140,7 @@ namespace ShortestPathResolver
                     return;
                 }
                 Message m = (Message)Message.Deserialize(new MemoryStream(buffer));
+                TempStorage temp1 = tempStorage.Find(x => x.Socket == current);
                 switch (m.Type)
                 {
                     case 1:
@@ -148,6 +155,7 @@ namespace ShortestPathResolver
                             int j = 0;
                             Message response1 = new Message(null, 2, "Length message and ranges to calculate. ", 0, 0,
                                 Message.Serialize(new Message(generatedMatrix, 3, "Generated matrix")).Length);
+                            response1.PacketSize = PACKET_SIZE;
                             foreach (Socket value in clientSockets)
                             {
                                 response1.RangeFrom = matrix.CalculateRanges(config.GetClients(), config.GetVertices(), j)[0];
@@ -161,15 +169,16 @@ namespace ShortestPathResolver
                     case 2:
                         Console.WriteLine(m.Text.ToString());
                         Message response2 = new Message(generatedMatrix, 3, "Generated matrix");
+                        temp1.Sw.Start();
                         Send(response2, current, Message.Serialize(response2).Length);
                         Console.WriteLine("Message matrix as chunks has been send to client (IP: {0}).", ((IPEndPoint)(current.RemoteEndPoint)).Address.ToString());
                         break;
                     case 3:
                         Console.WriteLine(m.Text.ToString());
                         Console.WriteLine("Received length of message from client (IP: {0})", ((IPEndPoint)(current.RemoteEndPoint)).Address.ToString());
-                        TempStorage temp1 = tempStorage.Find(x => x.Socket == current);
                         temp1.Length = m.Length;
                         temp1.ReceiveFlag = true;
+                        temp1.TimeLog.Add(m.TimeLog[m.TimeLog.Count - 1]);
                         Message response3 = new Message(null, 4, "Request for matrix");
                         Send(response3, current);
                         break;

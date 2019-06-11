@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Sockets;
 
 namespace ShortestPathResolver
@@ -12,6 +14,8 @@ namespace ShortestPathResolver
         public Socket Socket { get; set; } = null;
         public int rangeFrom { get; set; } = 0;
         public int rangeTo { get; set; } = 0;
+        public Stopwatch Sw { get; set; } = new Stopwatch();
+        public List<TimeSpan> TimeLog { get; set; } = new List<TimeSpan>();
         public TempStorage(Socket socket)
         {
             this.Socket = socket;
