@@ -14,6 +14,7 @@ namespace ShortestPathResolver
         public Socket Socket { get; set; } = null;
         public Stopwatch Sw { get; set; } = new Stopwatch();
         public List<TimeSpan> TimeLog { get; set; } = new List<TimeSpan>();
+        public int centralPoint;
         public TempStorage(Socket socket)
         {
             this.Socket = socket;

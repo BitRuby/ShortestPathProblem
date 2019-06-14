@@ -109,6 +109,7 @@ namespace ShortestPathResolver
                     if (counter == config.GetClients())
                     {
                         matrix.SaveMatrixToFile(generatedMatrix, "Matrix.txt");
+                        Console.WriteLine("Central point: {0}", matrix.findCentralPoint(solution));
                         matrix.SaveMatrixToFile(solution, "NewMatrix.txt");
                         Console.WriteLine("Generated matrix saved to file Matrix.txt and calculated matrix to NewMatrix.txt. Press Enter to Exit");
                         return;

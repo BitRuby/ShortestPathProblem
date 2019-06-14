@@ -51,6 +51,36 @@ namespace ShortestPathResolver
             return m;
         }
 
+        public int findCentralPoint(int[,] dist)
+        {
+            int sum = 0;
+            int minSum = 0;
+            int cLine = 0;
+            int L = (int)Math.Floor((double)Math.Pow(dist.Length, 0.5));
+            for (int i = 0; i <= L - 1; i++)
+            {
+                for (int j = 0; j <= L-1; j++)
+                {
+                    sum += dist[i, j];
+                }
+                if (i > 0)
+                {
+                    if (sum < minSum)
+                    {
+                        minSum = sum;
+                        cLine = i;
+                    }
+                }
+                else
+                {
+                    minSum = sum;
+                }
+                sum = 0;
+            }
+            return cLine;
+        }
+
+
         public void SaveMatrixToFile(int[,] matrix, string name)
         {
             using (StreamWriter file = new StreamWriter(@name, false))
