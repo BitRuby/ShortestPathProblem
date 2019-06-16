@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Diagnostics;
 
 namespace ShortestPathResolver
 {
@@ -21,6 +22,7 @@ namespace ShortestPathResolver
         private static int[,] generatedMatrix;
         private static int[,] solution;
         private static int counter = 0;
+        private static Stopwatch totalTime = new Stopwatch();
         #endregion
 
         #region SetupServer
@@ -95,7 +97,7 @@ namespace ShortestPathResolver
                     Console.WriteLine("Received matrix from client (IP: {0}). ", ((IPEndPoint)(current.RemoteEndPoint)).Address.ToString());
                     Console.WriteLine("Calculation time: {0} s", temp2.TimeLog[0]);
                     Console.WriteLine("Send/receive time: {0} s", temp2.Sw.Elapsed - temp2.TimeLog[0]);
-                    Console.WriteLine("Elapsed total: {0} s", temp2.Sw.Elapsed);
+                    Console.WriteLine("Elapsed total in connection: {0} s", temp2.Sw.Elapsed);
                     int L = (int)Math.Floor((double)Math.Pow(temp2.ReceivedMessage.Mat.Length, 0.5));
                     for (int i = 0; i <= L - 1; i++)
                     {
@@ -111,6 +113,8 @@ namespace ShortestPathResolver
                         matrix.SaveMatrixToFile(generatedMatrix, "Matrix.txt");
                         Console.WriteLine("Central point: {0}", matrix.findCentralPoint(solution));
                         matrix.SaveMatrixToFile(solution, "NewMatrix.txt");
+                        totalTime.Stop();
+                        Console.WriteLine("Total elapsed time: {0}", totalTime.Elapsed);
                         Console.WriteLine("Generated matrix saved to file Matrix.txt and calculated matrix to NewMatrix.txt. Press Enter to Exit");
                         return;
                     }
@@ -153,6 +157,7 @@ namespace ShortestPathResolver
                         }
                         else
                         {
+                            totalTime.Start();
                             int j = 0;
                             Message response1 = new Message(null, 2, "Length message and ranges to calculate. ", 0, 0,
                                 Message.Serialize(new Message(generatedMatrix, 3, "Generated matrix")).Length);
